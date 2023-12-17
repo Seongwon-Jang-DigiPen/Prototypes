@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Shapes;
-public class Wave : MonoBehaviour
+public class Wave : PoolAble
 {
     Disc _waveDisc;
 
@@ -18,19 +18,33 @@ public class Wave : MonoBehaviour
         _waveDisc = GetComponent<Disc>();    
     }
 
+    private void OnEnable()
+    {
+        timer = 0;
+    }
+
     void Update()
     {
         float t = curve.Evaluate(timer / PlayTime);
         transform.localScale = Vector3.Lerp(Vector3.one * StartScale, Vector3.one * EndScae, t);
         _waveDisc.Thickness = Mathf.Lerp(StartThickness, EndThickness, t);
 
-        if (timer < 1f)
+        if (timer < PlayTime)
         {
             timer += Time.deltaTime;
         }
+        else
+        {
+            ReleaseObject();
+        }
     }
-    public void Reset()
+    public override void Reset()
     {
         timer = 0;
+    }
+
+    public override void Init()
+    {
+        
     }
 }

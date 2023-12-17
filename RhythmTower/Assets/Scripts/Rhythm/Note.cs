@@ -7,6 +7,20 @@ using UnityEngine;
 [Serializable]
 public class Note
 {
+    public enum NoteState
+    {
+        Normal, Hitted, Failed, Passed
+    }
+    /*end to move*/
+    public bool IsEnd { get
+        {
+            double time = NoteManager.Instance.BGMTime;
+            return MatchTime < time && GetAccuracyPercentage(time) <= 0;
+        }
+    }
+
+    public NoteState State = NoteState.Normal;
+
     public Note(double matchTime)
     {
         _matchTime = matchTime;
