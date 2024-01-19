@@ -126,7 +126,7 @@ public class NoteManager : MonoBehaviour
     #region GenereateNote
     private void MakeNoteList() //temp code
     {
-        for (double i = _timePerBeat; i < _bgmAS.clip.length; i += _timePerBeat)
+        for (double i = 0.068; i < _bgmAS.clip.length; i += _timePerBeat)
         {
             Note sn = new Note(i);
             _noteList.Add(sn);
