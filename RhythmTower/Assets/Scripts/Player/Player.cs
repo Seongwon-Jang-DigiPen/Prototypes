@@ -12,7 +12,10 @@ public class Player : MonoBehaviour
 
     public float Mp { get { return _mp; } }
     private float _mp;
-     
+
+    public float Speed { get { return _speed; } set { _speed = value; } }
+    private float _speed = 300;
+
     private void Awake()
     {
         if(_instance == null)
@@ -28,4 +31,25 @@ public class Player : MonoBehaviour
         _hp -= damage;
     }
 
+    private void Update()
+    {
+        Vector3 dir = Vector3.zero;
+        if (Input.GetKey(KeyCode.W))
+        {
+           dir += Vector3.up;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            dir += Vector3.down;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            dir += Vector3.left;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            dir += Vector3.right;
+        }
+        transform.Translate(dir * Speed * Time.deltaTime);
+    }
 }
