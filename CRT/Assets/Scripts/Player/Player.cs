@@ -14,8 +14,9 @@ public class Player : MonoBehaviour
     private float _mp;
 
     public float Speed { get { return _speed; } set { _speed = value; } }
-    private float _speed = 300;
+    private float _speed = 30;
 
+    public GameObject tempbullet;
     private void Awake()
     {
         if(_instance == null)
@@ -33,7 +34,9 @@ public class Player : MonoBehaviour
 
     public void shoot()
     {
-        var a = transform.rotation * Vector3.forward;
+        Vector3 dir = new Vector3(Mathf.Cos(transform.eulerAngles.z * Mathf.Deg2Rad), Mathf.Sin(transform.eulerAngles.z * Mathf.Deg2Rad), 0);
+        GameObject obj = Instantiate(tempbullet, transform.position, tempbullet.transform.rotation);
+        obj.GetComponent<Bullet>().SetDirection(dir);
     }
 
     private void Update()

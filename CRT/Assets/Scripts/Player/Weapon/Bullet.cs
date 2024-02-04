@@ -15,4 +15,14 @@ public class Bullet : MonoBehaviour
     {
         Direction = dir;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        var cell = collision.gameObject.GetComponent<Cell>();
+        if(cell)
+        {
+            Destroy(this.gameObject);
+            cell.hitted(0, 2, 10, new HashSet<Cell>());
+        }
+    }
 }
