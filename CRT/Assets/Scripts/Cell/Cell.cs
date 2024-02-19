@@ -6,7 +6,7 @@ using Shapes;
 
 public enum CellPos { Left = 0, Right, Up, Down, Count };
 
-public class Cell : MonoBehaviour
+public class Cell : Attackable
 {
     GameObject onwer;
 
@@ -25,19 +25,53 @@ public class Cell : MonoBehaviour
         shape.Color = Color.black * (Hp / MaxHp);
     }
 
-    public void hitted(int count, int maxCount, int damage, HashSet<Cell> passedList)
+    public override void Hitted(DamageInfo damageInfo)
     {
-        if (passedList.Add(this))
+
+        Queue<DamageInfo> q = new Queue<DamageInfo>();
+
+        damageInfo.target = this;
+
+        HashSet<Cell> s = new HashSet<Cell>();
+        q.Enqueue(damageInfo);
+
+        bfs();
+
+        void bfs()
         {
-            Hp -= damage;
-            for (int i = 0; i < NearCell.Length; ++i)
+            while (q.Count > 0)
             {
-                NearCell[i]?.hitted(count + 1, maxCount, damage / (count + 1), passedList);
+                DamageInfo iter = q.Dequeue();
+                Cell cell = iter.target.GetComponent<Cell>();
+
+                s.Add(cell);
+                GetDamage(iter.damage / (iter.count + 1));
+
+                if (iter.count + 1 >= iter.maxCount) { continue; }
+                iter.count++;
+
+                for (int i = 0; i < cell.NearCell.Length; ++i)
+                {
+                    if (cell.NearCell[i] != null)
+                    {
+                        if (s.Contains(cell.NearCell[i]) == true) { continue; }
+                        DamageInfo temp = iter;
+                        temp.target = cell.NearCell[i];
+                        q.Enqueue(temp);
+                    }
+                }
             }
-            shape.Color =   Color.black * (Hp / MaxHp) + Color.cyan *  (1 - (Hp / MaxHp));
         }
+    }   
+
+
+    private void GetDamage(int damage)
+    {
+        Hp -= damage;
+        shape.Color = Color.black * (Hp / MaxHp) + Color.cyan * (1 - (Hp / MaxHp));
     }
 
+    //using raycast to find near cell
     void FindNearCell()
     {
         for (int i = 0; i < (int)CellPos.Count; ++i)

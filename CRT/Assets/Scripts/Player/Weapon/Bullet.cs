@@ -5,7 +5,10 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     Vector2 Direction = Vector2.zero;
+    public float damage = 50;
+    public int spread = 3;
     public float bulletSpeed = 100;
+    bool isHitted = false;
     void Update()
     {
         transform.Translate(Direction * bulletSpeed * Time.deltaTime, Space.World);    
@@ -19,10 +22,18 @@ public class Bullet : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         var cell = collision.gameObject.GetComponent<Cell>();
-        if(cell)
+        if(cell && isHitted == false)
         {
+            isHitted = true;
             Destroy(this.gameObject);
-            cell.hitted(0, 2, 10, new HashSet<Cell>());
+            DamageInfo info;
+
+            info.target = cell;
+            info.maxCount = spread;
+            info.count = 0;
+            info.damage = 50;
+            cell.Hitted(info);
+
         }
     }
 }
